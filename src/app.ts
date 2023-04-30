@@ -1,8 +1,9 @@
+require('dotenv').config();
 import express from 'express'
 import cors from 'cors'
 import { addGuests, deleteGuest, getGuests, updateGuest } from './services/guests.service'
 const app = express()
-const port = 3000
+const port = process.env.PORT;
 
 app.use(cors())
 app.use(express.json())
