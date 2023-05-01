@@ -29,7 +29,7 @@ export const signUp = async (req: Request, res: Response) => {
             const finalUser = {
                 email: req.body.email,
                 password: hashedPassword,
-                jwt: `Bearer ${token}`
+                jwt: `${token}`
             }
             
             await collection?.insertOne(finalUser)
