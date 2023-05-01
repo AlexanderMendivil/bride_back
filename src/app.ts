@@ -2,6 +2,7 @@ require('dotenv').config();
 import express from 'express'
 import cors from 'cors'
 import { addGuests, deleteGuest, getGuests, updateGuest } from './services/guests.service'
+import { IGuest } from './interfaces/guest.interface';
 const app = express()
 const port = process.env.PORT;
 
@@ -18,13 +19,13 @@ app.post('/guest', async (req, res) => {
   res.send(result)
 })
 app.put('/guest', async (req, res) => {
-  const { email, guest } = req.body
-  const result = await updateGuest(email, guest)
+  const  guest = req.body as IGuest
+  const result = await updateGuest(guest)
   res.send(result)
 })
 app.delete('/guest', async (req, res) => {
-  const { email } = req.body
-  const result = await deleteGuest(email)
+  const ids = req.body
+  const result = await deleteGuest(ids)
   res.send(result)
 })
 
