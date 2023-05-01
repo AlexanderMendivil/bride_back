@@ -3,6 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import { addGuests, deleteGuest, getGuests, updateGuest } from './services/guests.service'
 import { IGuest } from './interfaces/guest.interface';
+import { login, signUp } from './services/auth.service';
+import { authenticateToken } from './middleware/auth.middleware';
 const app = express()
 const port = process.env.PORT;
 
@@ -10,20 +12,24 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.get('/guest', async (req, res) => {
+app.post('/login', login);
+
+app.post('/signup', signUp);
+
+app.get('/guest', authenticateToken, async (req, res) => {
   const guests = await getGuests()
   res.send(guests)
 })
-app.post('/guest', async (req, res) => {
+app.post('/guest', authenticateToken, async (req, res) => {
   const result = await addGuests(req.body)
   res.send(result)
 })
-app.put('/guest', async (req, res) => {
+app.put('/guest', authenticateToken, async (req, res) => {
   const  guest = req.body as IGuest
   const result = await updateGuest(guest)
   res.send(result)
 })
-app.delete('/guest', async (req, res) => {
+app.delete('/guest', authenticateToken, async (req, res) => {
   const ids = req.body
   const result = await deleteGuest(ids)
   res.send(result)
