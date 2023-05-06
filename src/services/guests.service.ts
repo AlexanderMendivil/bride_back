@@ -25,6 +25,17 @@ export const deleteGuest = async ( ids: string[] ) => {
   return insertedGuest
 }
 
+
+export const confirmInvite = async ( id: string, status: string ) => {
+  const collection = await connection()
+  const guest = await collection?.findOne({ id: id })
+
+  if(guest){
+    const update = { $set: {...guest, status} }
+    const updatedGuest = await collection?.updateOne({ id:guest.id }, update)
+    return updatedGuest
+  }    
+}
 // This is the function I´m creating to sent Whatsapp messages
 export const sendMessages = async ( ids: string[] ) => {
   const collection = await connection()
