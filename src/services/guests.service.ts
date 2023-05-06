@@ -24,3 +24,15 @@ export const deleteGuest = async ( ids: string[] ) => {
   const insertedGuest = await collection?.deleteMany({id: {$in: ids}})
   return insertedGuest
 }
+
+
+export const confirmInvite = async ( id: string, status: string ) => {
+  const collection = await connection()
+  const guest = await collection?.findOne({ id: id })
+
+  if(guest){
+    const update = { $set: {...guest, status} }
+    const updatedGuest = await collection?.updateOne({ id:guest.id }, update)
+    return updatedGuest
+  }    
+}

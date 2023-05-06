@@ -1,7 +1,7 @@
 require('dotenv').config();
 import express from 'express'
 import cors from 'cors'
-import { addGuests, deleteGuest, getGuests, updateGuest } from './services/guests.service'
+import { addGuests, confirmInvite, deleteGuest, getGuests, updateGuest } from './services/guests.service'
 import { IGuest } from './interfaces/guest.interface';
 import { login, signUp } from './services/auth.service';
 import { authenticateToken } from './middleware/auth.middleware';
@@ -32,6 +32,12 @@ app.put('/guest', authenticateToken, async (req, res) => {
 app.delete('/guest', authenticateToken, async (req, res) => {
   const ids = req.body
   const result = await deleteGuest(ids)
+  res.send(result)
+})
+
+app.put('/invite', authenticateToken, async (req, res) => {
+  const  { id, status } = req.body
+  const result = await confirmInvite(id, status)
   res.send(result)
 })
 
