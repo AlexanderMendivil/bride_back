@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { connectionAuth } from '../../DBConnection/connectionAuth';
-import { User } from '../interfaces/user.interface';
 import { Request, Response } from 'express';
 
 export const signUp = async (req: Request, res: Response) => {

@@ -1,5 +1,6 @@
 import { connection } from '../../DBConnection/connection'
 import { type IGuest } from '../interfaces/guest.interface'
+import nodemailer from 'nodemailer'
 
 export const getGuests = async () => {
   const collection = await connection()
@@ -36,12 +37,35 @@ export const confirmInvite = async ( id: string, status: string ) => {
     return updatedGuest
   }    
 }
-// This is the function I´m creating to sent Whatsapp messages
-export const sendMessages = async ( ids: string[] ) => {
+
+export const sendEmails = async ( ids: string[] ) => {
   const collection = await connection()
-  // return await collection?.find({}).toArray()
-  const guests = await collection?.find({ _id: { in: ids } }).toArray()
-  console.log(guests)
-  // Get the phone number for every user, then save them in an array
-  // Iterate that array to send a message for each phone number
+
+  var transporter = nodemailer.createTransport({
+    service: `${process.env.EMAIL_SERVICE}`,
+    auth: {
+      user: `${process.env.EMAIL_INVITE}`,
+      pass: `${process.env.EMAIL_PASSWORD}`
+    }
+  });
+  const guests = await collection?.find({ id: { $in: ids }}).toArray()
+  
+  if(guests){
+    for(let guest of guests){
+      let mailOptions = {
+        from: `${process.env.EMAIL_INVITE}`,
+        to: `${guest.email}`,
+        subject: 'Has recivido una invitación para la boda de Andrea y José Inés!',
+        text: `Hola! el motivo de este correo es la invitación a la boda, en el siguiente link podras ver la invitación: http://localhost:3000/slideshow/${guest.id} no olvides  confirmar tu assitencia al final :)`
+      };
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+    }
+  }
 }

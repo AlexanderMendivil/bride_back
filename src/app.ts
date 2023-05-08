@@ -1,7 +1,7 @@
 require('dotenv').config();
 import express from 'express'
 import cors from 'cors'
-import { addGuests, confirmInvite, deleteGuest, getGuests, updateGuest, sendMessages } from './services/guests.service'
+import { addGuests, confirmInvite, deleteGuest, getGuests, updateGuest, sendEmails } from './services/guests.service'
 import { IGuest } from './interfaces/guest.interface';
 import { login, signUp } from './services/auth.service';
 import { authenticateToken } from './middleware/auth.middleware';
@@ -41,9 +41,9 @@ app.put('/invite', authenticateToken, async (req, res) => {
   res.send(result)
 })
 
-// Endpoint to send whatsapp messages
 app.post('/invite', authenticateToken, async (req, res) => {
-  const result = await sendMessages(req.body)
+  const { ids } = req.body
+  const result = await sendEmails(ids)
   res.send(result)
 })
 
