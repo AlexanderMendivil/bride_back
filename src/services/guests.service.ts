@@ -7,6 +7,10 @@ export const getGuests = async () => {
   return await collection?.find({}).toArray()
 }
 
+export const getOneGuest = async ( id: string ) => {
+  const collection = await connection()
+return await collection?.findOne({ id })
+}
 export const addGuests = async (guest: IGuest) => {
   const collection = await connection()
   const insertedGuest = await collection?.insertOne(guest)
@@ -55,7 +59,7 @@ export const sendEmails = async ( ids: string[] ) => {
       let mailOptions = {
         from: `${process.env.EMAIL_INVITE}`,
         to: `${guest.email}`,
-        subject: 'Has recivido una invitación para la boda de Andrea y José Inés!',
+        subject: 'Has recibido una invitación para la boda de Andrea y José Inés!',
         text: `Hola! el motivo de este correo es la invitación a la boda, en el siguiente link podras ver la invitación: http://localhost:3000/slideshow/${guest.id} no olvides  confirmar tu assitencia al final :)`
       };
       transporter.sendMail(mailOptions, function(error, info){

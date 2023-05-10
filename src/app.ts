@@ -1,7 +1,7 @@
 require('dotenv').config();
 import express from 'express'
 import cors from 'cors'
-import { addGuests, confirmInvite, deleteGuest, getGuests, updateGuest, sendEmails } from './services/guests.service'
+import { addGuests, confirmInvite, deleteGuest, getGuests, updateGuest, sendEmails, getOneGuest } from './services/guests.service'
 import { IGuest } from './interfaces/guest.interface';
 import { login, signUp } from './services/auth.service';
 import { authenticateToken } from './middleware/auth.middleware';
@@ -45,6 +45,12 @@ app.post('/invite', authenticateToken, async (req, res) => {
   const { ids } = req.body
   const result = await sendEmails(ids)
   res.send(result)
+})
+
+app.post('/OneGuest', async (req, res) => {
+  console.log(req.body)
+  const guest = await getOneGuest(req.body.id)
+  res.send(guest)
 })
 
 app.listen(port, async () => {
