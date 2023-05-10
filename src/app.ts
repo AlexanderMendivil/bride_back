@@ -35,7 +35,7 @@ app.delete('/guest', authenticateToken, async (req, res) => {
   res.send(result)
 })
 
-app.put('/invite', authenticateToken, async (req, res) => {
+app.put('/invite', async (req, res) => {
   const  { id, status } = req.body
   const result = await confirmInvite(id, status)
   res.send(result)
