@@ -60,7 +60,7 @@ export const sendEmails = async ( ids: string[] ) => {
         from: `${process.env.EMAIL_INVITE}`,
         to: `${guest.email}`,
         subject: 'Has recibido una invitación para la boda de Andrea y José Inés!',
-        text: `Hola! el motivo de este correo es la invitación a la boda, en el siguiente link podras ver la invitación: http://localhost:3000/slideshow/${guest.id} no olvides  confirmar tu assitencia al final :)`
+        text: `Hola! el motivo de este correo es la invitación a la boda, en el siguiente link podras ver la invitación: ${process.env.PROD_LINK}/slideshow/${guest.id} no olvides  confirmar tu assitencia al final :)`
       };
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
