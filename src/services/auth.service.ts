@@ -10,6 +10,7 @@ export const signUp = async (req: Request, res: Response) => {
     const existingUser = await collection?.findOne({email: req.body.email})
 
     if (existingUser) {
+        connect?.close()
         return res.status(409).json({ message: 'User already exists' });
     }
 
@@ -17,6 +18,7 @@ export const signUp = async (req: Request, res: Response) => {
         try{
 
             if (err) {
+                connect?.close()
                 return res.status(500).json({ message: 'Error hashing password' });
             }
             
@@ -33,12 +35,13 @@ export const signUp = async (req: Request, res: Response) => {
             }
             
             await collection?.insertOne(finalUser)
+            connect?.close()
             return res.status(201).json({ finalUser });
         }catch(e){
+            connect?.close()
             return res.status(500).json({ message: 'Server error' });
         }
       });
-      connect?.close()
 }
 
 export const login = async (req: Request, res: Response) =>{
@@ -47,6 +50,7 @@ export const login = async (req: Request, res: Response) =>{
     const existingUser = await collection?.findOne({email: req.body.email})
 
     if (!existingUser) {
+        connect?.close()
         return res.status(404).json({ message: 'User not found' });
     }
 
@@ -56,11 +60,11 @@ export const login = async (req: Request, res: Response) =>{
       }
       if (result) {
         const token = jwt.sign({ username: existingUser?.username, id: existingUser?.id }, process.env.SECRET_KEY!, { expiresIn: '30d' });
-
+        connect?.close()
         return res.status(200).json({ token, user: req.body })
-      }
+    }
+        connect?.close()
       return res.status(401).json({ message: 'Authentication failed' });
     });
 
-    connect?.close()
 }
