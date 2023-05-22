@@ -4,7 +4,8 @@ import { connectionAuth } from '../../DBConnection/connectionAuth';
 import { Request, Response } from 'express';
 
 export const signUp = async (req: Request, res: Response) => {
-    const collection = await connectionAuth()
+    const connect = await connectionAuth()?.connect()
+  const collection = connect?.db('Bride').collection('users')
 
     const existingUser = await collection?.findOne({email: req.body.email})
 
@@ -37,10 +38,12 @@ export const signUp = async (req: Request, res: Response) => {
             return res.status(500).json({ message: 'Server error' });
         }
       });
+      connect?.close()
 }
 
 export const login = async (req: Request, res: Response) =>{
-    const collection = await connectionAuth()
+    const connect = await connectionAuth()?.connect()
+    const collection = connect?.db('Bride').collection('users')
     const existingUser = await collection?.findOne({email: req.body.email})
 
     if (!existingUser) {
@@ -59,4 +62,5 @@ export const login = async (req: Request, res: Response) =>{
       return res.status(401).json({ message: 'Authentication failed' });
     });
 
+    connect?.close()
 }

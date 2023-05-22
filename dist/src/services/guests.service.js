@@ -16,46 +16,68 @@ exports.sendEmails = exports.confirmInvite = exports.deleteGuest = exports.updat
 const connection_1 = require("../../DBConnection/connection");
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const getGuests = () => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connection_1.connection)();
-    return yield (collection === null || collection === void 0 ? void 0 : collection.find({}).toArray());
+    var _a;
+    const connect = yield ((_a = (0, connection_1.connection)()) === null || _a === void 0 ? void 0 : _a.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('guests');
+    const guests = yield (collection === null || collection === void 0 ? void 0 : collection.find({}).toArray());
+    connect === null || connect === void 0 ? void 0 : connect.close();
+    return guests;
 });
 exports.getGuests = getGuests;
 const getOneGuest = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connection_1.connection)();
-    return yield (collection === null || collection === void 0 ? void 0 : collection.findOne({ id }));
+    var _b;
+    const connect = yield ((_b = (0, connection_1.connection)()) === null || _b === void 0 ? void 0 : _b.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('guests');
+    const guest = yield (collection === null || collection === void 0 ? void 0 : collection.findOne({ id }));
+    connect === null || connect === void 0 ? void 0 : connect.close();
+    return guest;
 });
 exports.getOneGuest = getOneGuest;
 const addGuests = (guest) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connection_1.connection)();
+    var _c;
+    const connect = yield ((_c = (0, connection_1.connection)()) === null || _c === void 0 ? void 0 : _c.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('guests');
     const insertedGuest = yield (collection === null || collection === void 0 ? void 0 : collection.insertOne(guest));
+    connect === null || connect === void 0 ? void 0 : connect.close();
     return insertedGuest;
 });
 exports.addGuests = addGuests;
 const updateGuest = (guest) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connection_1.connection)();
+    var _d;
+    const connect = yield ((_d = (0, connection_1.connection)()) === null || _d === void 0 ? void 0 : _d.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('guests');
     const update = { $set: guest };
     const updatedGuest = yield (collection === null || collection === void 0 ? void 0 : collection.updateOne({ id: guest.id }, update));
+    connect === null || connect === void 0 ? void 0 : connect.close();
     return updatedGuest;
 });
 exports.updateGuest = updateGuest;
 const deleteGuest = (ids) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connection_1.connection)();
+    var _e;
+    const connect = yield ((_e = (0, connection_1.connection)()) === null || _e === void 0 ? void 0 : _e.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('guests');
     const insertedGuest = yield (collection === null || collection === void 0 ? void 0 : collection.deleteMany({ id: { $in: ids } }));
+    connect === null || connect === void 0 ? void 0 : connect.close();
     return insertedGuest;
 });
 exports.deleteGuest = deleteGuest;
 const confirmInvite = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connection_1.connection)();
+    var _f;
+    const connect = yield ((_f = (0, connection_1.connection)()) === null || _f === void 0 ? void 0 : _f.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('guests');
     const guest = yield (collection === null || collection === void 0 ? void 0 : collection.findOne({ id: id }));
     if (guest) {
         const update = { $set: Object.assign(Object.assign({}, guest), { status }) };
         const updatedGuest = yield (collection === null || collection === void 0 ? void 0 : collection.updateOne({ id: guest.id }, update));
+        connect === null || connect === void 0 ? void 0 : connect.close();
         return updatedGuest;
     }
 });
 exports.confirmInvite = confirmInvite;
 const sendEmails = (ids) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connection_1.connection)();
+    var _g;
+    const connect = yield ((_g = (0, connection_1.connection)()) === null || _g === void 0 ? void 0 : _g.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('guests');
     var transporter = nodemailer_1.default.createTransport({
         service: `${process.env.EMAIL_SERVICE}`,
         auth: {
@@ -82,6 +104,7 @@ const sendEmails = (ids) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
     }
+    connect === null || connect === void 0 ? void 0 : connect.close();
 });
 exports.sendEmails = sendEmails;
 //# sourceMappingURL=guests.service.js.map

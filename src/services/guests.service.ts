@@ -3,47 +3,62 @@ import { type IGuest } from '../interfaces/guest.interface'
 import nodemailer from 'nodemailer'
 
 export const getGuests = async () => {
-  const collection = await connection()
-  return await collection?.find({}).toArray()
+  const connect = await connection()?.connect()
+  const collection = connect?.db('Bride').collection('guests')
+  const guests = await collection?.find({}).toArray()
+  connect?.close()
+  return guests
 }
 
 export const getOneGuest = async ( id: string ) => {
-  const collection = await connection()
-return await collection?.findOne({ id })
+  const connect = await connection()?.connect()
+  const collection = connect?.db('Bride').collection('guests')
+  const guest = await collection?.findOne({ id })
+  connect?.close()
+  return guest
 }
 export const addGuests = async (guest: IGuest) => {
-  const collection = await connection()
+  const connect = await connection()?.connect()
+  const collection = connect?.db('Bride').collection('guests')
   const insertedGuest = await collection?.insertOne(guest)
+  connect?.close()
   return insertedGuest
 }
 
 export const updateGuest = async ( guest: IGuest) => {
-  const collection = await connection()
+  const connect = await connection()?.connect()
+  const collection = connect?.db('Bride').collection('guests')
   const update = { $set: guest }
   const updatedGuest = await collection?.updateOne({ id:guest.id }, update)
+  connect?.close()
   return updatedGuest
 }
 
 export const deleteGuest = async ( ids: string[] ) => {
-  const collection = await connection()
+  const connect = await connection()?.connect()
+  const collection = connect?.db('Bride').collection('guests')
   const insertedGuest = await collection?.deleteMany({id: {$in: ids}})
+  connect?.close()
   return insertedGuest
 }
 
 
 export const confirmInvite = async ( id: string, status: string ) => {
-  const collection = await connection()
+  const connect = await connection()?.connect()
+  const collection = connect?.db('Bride').collection('guests')
   const guest = await collection?.findOne({ id: id })
 
   if(guest){
     const update = { $set: {...guest, status} }
     const updatedGuest = await collection?.updateOne({ id:guest.id }, update)
+    connect?.close()
     return updatedGuest
   }    
 }
 
 export const sendEmails = async ( ids: string[] ) => {
-  const collection = await connection()
+  const connect = await connection()?.connect()
+  const collection = connect?.db('Bride').collection('guests')
 
   var transporter = nodemailer.createTransport({
     service: `${process.env.EMAIL_SERVICE}`,
@@ -72,4 +87,5 @@ export const sendEmails = async ( ids: string[] ) => {
 
     }
   }
+  connect?.close()
 }

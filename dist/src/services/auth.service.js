@@ -17,7 +17,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const connectionAuth_1 = require("../../DBConnection/connectionAuth");
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connectionAuth_1.connectionAuth)();
+    var _a;
+    const connect = yield ((_a = (0, connectionAuth_1.connectionAuth)()) === null || _a === void 0 ? void 0 : _a.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('users');
     const existingUser = yield (collection === null || collection === void 0 ? void 0 : collection.findOne({ email: req.body.email }));
     if (existingUser) {
         return res.status(409).json({ message: 'User already exists' });
@@ -44,10 +46,13 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(500).json({ message: 'Server error' });
         }
     }));
+    connect === null || connect === void 0 ? void 0 : connect.close();
 });
 exports.signUp = signUp;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield (0, connectionAuth_1.connectionAuth)();
+    var _b;
+    const connect = yield ((_b = (0, connectionAuth_1.connectionAuth)()) === null || _b === void 0 ? void 0 : _b.connect());
+    const collection = connect === null || connect === void 0 ? void 0 : connect.db('Bride').collection('users');
     const existingUser = yield (collection === null || collection === void 0 ? void 0 : collection.findOne({ email: req.body.email }));
     if (!existingUser) {
         return res.status(404).json({ message: 'User not found' });
@@ -62,6 +67,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         return res.status(401).json({ message: 'Authentication failed' });
     });
+    connect === null || connect === void 0 ? void 0 : connect.close();
 });
 exports.login = login;
 //# sourceMappingURL=auth.service.js.map

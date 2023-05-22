@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion } from 'mongodb'
 
-export const connectionAuth = async () => {
+export const connectionAuth = () => {
   try {
     const uri = process.env.MONGO_URL
     const client = new MongoClient(uri!, {
@@ -10,9 +10,10 @@ export const connectionAuth = async () => {
         deprecationErrors: true
       }
     })
-    await client.connect()
-    const collection = client.db('Bride').collection('users')
-    return collection
+    return client
+    // await client.connect()
+    // const collection = client.db('Bride').collection('users')
+    // return collection
   } catch (e) {
     console.log(e)
   }
